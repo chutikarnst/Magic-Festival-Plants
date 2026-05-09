@@ -1,13 +1,12 @@
 import pygame
 import math
 from animation import Animation
-from Weapon import Sickle
+from weapon import Sickle, Bullet
 from config import Config
 
 class Entity:
     def __init__(self, x, y, hp, speed, name):
         self.name = name
-        self.rect = pygame.Rect(x, y, 40, 40)
         self.x = x
         self.y = y
         self.hp = hp
@@ -28,7 +27,6 @@ class Player(Entity):
     def __init__(self, x, y, game):
         super().__init__(x, y, 100, 4, "player")
         self.game = game
-        self.rect = pygame.Rect(x, y, 30, 30)
         self.sickle = Sickle(self)
         self.inventory = []
         self.item_used_this_hour = []
@@ -53,7 +51,7 @@ class Player(Entity):
             self.x += (dx / length) * self.speed
             self.y += (dy / length) * self.speed
 
-        self.rect.topleft = (self.x, self.y)
+        self.rect.topleft  = (self.x, self.y)
 
         if self.is_attacking:
             self.attack_timer -= dt
@@ -86,13 +84,14 @@ class Player(Entity):
     def collect(self, plant):
         if plant.type in self.game.plants_collected:
             self.game.plants_collected[plant.type] += 1
+            self.game.hour_plants_collected[plant.type] += 1
             idx = ["Fruit", "Vegetable", "Flower"].index(plant.type)
             if plant.rare == "rare":
                 self.game.hour_scores[idx] += 50
                 self.game.scores[idx] += 50
             else:
                 self.game.hour_scores[idx] += 10
-                self.game.scores[idx] += 50
+                self.game.scores[idx] += 10
         else:
             self.inventory.append(plant)
 
@@ -123,8 +122,8 @@ class Player(Entity):
 
 
 class Enemy(Entity):
-    def __init__(self, x, y, speed, name):
-        super().__init__(x, y, 50, speed, name)
+    def __init__(self, x, y, hp, speed, name):
+        super().__init__(x, y, hp, speed, name)
         self.danger = "normal"
         self.rect = pygame.Rect(x, y, 30, 30)
         
@@ -140,9 +139,10 @@ class Enemy(Entity):
         tint = (255, 100, 100, 255) if self.danger == "danger" else None
         self.animation.draw(screen, self.x, self.y, tint)
 
+
 class Barghest(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, 2, "barghest")
+        super().__init__(x, y, 50, 2, "barghest")
 
     def chase(self, player, dt):
         dx, dy = player.x - self.x, player.y - self.y
@@ -150,18 +150,18 @@ class Barghest(Enemy):
         
         if dist > 0:
             self.animation.direction = 'left' if dx < 0 else 'right'
-
             self.x += (dx/dist) * self.speed
             self.y += (dy/dist) * self.speed
             
+            self.rect.topleft = (self.x, self.y)
+
             if self.rect.colliderect(player.rect):
                 player.take_dmg(5)
-            
-        self.rect.topleft = (self.x, self.y)
+
 
 class Venus_Trap(Enemy):
     def __init__(self, x, y):
-        super().__init__(x, y, 0, "venus")
+        super().__init__(x, y, 75, 0, "venus")
         self.shoot_cooldown = 0
 
     def chase(self, player, room, dt):
@@ -175,7 +175,6 @@ class Venus_Trap(Enemy):
         self.animation.update(dt, False, is_winding_up)
 
         if self.shoot_cooldown >= SHOOT_DELAY:
-            from Weapon import Bullet
             dy = player.rect.centery - self.rect.centery
             angle = math.atan2(dy, dx)
             
