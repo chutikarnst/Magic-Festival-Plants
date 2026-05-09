@@ -40,6 +40,7 @@ class Game:
         self.rooms = {i: Room(i) for i in range(1, 5)}
         
         self.plants_collected = {"Fruit": 0, "Vegetable": 0, "Flower": 0}
+        self.hour_plants_collected = {"Fruit": 0, "Vegetable": 0, "Flower": 0} 
         self.scores = [0, 0, 0] # [Fruit, Veg, Flower]
         self.hour_scores = [0, 0, 0]
         
@@ -69,10 +70,11 @@ class Game:
                 self.game_session_id, self.current_area, self.current_hour,
                 self.hour_scores[0], self.hour_scores[1], self.hour_scores[2],
                 "|".join(self.player.item_used_this_hour),
-                self.plants_collected["Fruit"], self.plants_collected["Vegetable"], self.plants_collected["Flower"]
+                self.hour_plants_collected["Fruit"], self.hour_plants_collected["Vegetable"], self.hour_plants_collected["Flower"]
             ])
         self.hour_scores = [0,0,0]
         self.player.item_used_this_hour = []
+        self.hour_plants_collected = {"Fruit": 0, "Vegetable": 0, "Flower": 0} 
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -239,7 +241,7 @@ class Game:
             self.screen.fill((20, 20, 30))
             msg = "WINNER!" if self.player.hp > 0 else "GAME OVER"
             msg = "WINNER!" if self.scores[0] > 300 and self.scores[1] > 300 and self.scores[2] > 300 else "GAME OVER"
-            if msg == "WINNER":
+            if msg == "WINNER!":
                 self.screen.blit(pygame.image.load(join("menu", "win_background.png")).convert(), (0, 0))
             else:
                 self.screen.blit(pygame.image.load(join("menu", "lose_background.png")).convert(), (0, 0))
