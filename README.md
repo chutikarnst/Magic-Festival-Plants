@@ -77,8 +77,8 @@ python3 main.py
 ---
 
 ## Known Bugs
-The scores for the plants and rare plants are the same (the rare plants should have get more score). (Fixed)
-In the hour data it didn't keep the hour score it kept all the score. (Fixed)
+(Fixed) The scores for the plants and rare plants are the same (the rare plants should have get more score). 
+(Fixed) In the hour data it didn't keep the hour score it kept all the score.
 the data window won't update hourly, only when the game is done and open a new data window. If exit the game while the data window is open, it will get an error. 
 Only hit top left of sprite.
 ---
