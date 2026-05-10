@@ -38,6 +38,7 @@ class Bullet:
         self.angle = angle
         self.speed = 5
         self.rect = pygame.Rect(x, y, 10, 10)
+        self.rect.center = (x, y)
 
     def update(self):
         self.x += math.cos(self.angle) * self.speed
