@@ -16,7 +16,7 @@ def open_data_dashboard():
         return
 
     root = tk.Tk()
-    root.title("4.3 Data Analysis Report - Magic Festival")
+    root.title("Data Analysis Report - Magic Festival")
     root.geometry("1000x800")
     
     content_frame = ttk.Frame(root)
@@ -28,7 +28,7 @@ def open_data_dashboard():
 
     def show_overall_stats():
         clear_content()
-        lbl = ttk.Label(content_frame, text="4.1 & 4.2 Overall Score Statistics", font=("Arial", 16, "bold"))
+        lbl = ttk.Label(content_frame, text="Overall Score Statistics", font=("Arial", 16, "bold"))
         lbl.pack(pady=10)
 
         stats = df[['Fr_Score', 'V_Score', 'Fl_Score']].agg(['mean', 'std'])
@@ -65,14 +65,14 @@ def open_data_dashboard():
                 return len(str(val).split('|'))
             df['Count'] = df['Item_used'].apply(count_items)
             ax.scatter(df['Hour'], df['Count'], color='purple', s=100, alpha=0.6)
-            ax.set_title("Item Utility: Items Used per Hour (Scatter)")
+            ax.set_title("Item Utility: Items Used per Hour")
             ax.set_xlabel("Game Hour")
             ax.set_xticks(range(1, 13))
 
         elif mode == "room":
             heatmap_data = pd.crosstab(df['Area_ID'], df['Hour'])
             sns.heatmap(heatmap_data, annot=True, cmap="YlGnBu", ax=ax, fmt='d')
-            ax.set_title("Favorite Room: Area vs Hour (Heatmap)")
+            ax.set_title("Favorite Room: Area vs Hour")
 
         elif mode == "hourly":
             df['Total_Score'] = df['Fr_Score'] + df['V_Score'] + df['Fl_Score']
@@ -81,7 +81,7 @@ def open_data_dashboard():
             
             sns.stripplot(x='Hour', y='Total_Score', data=df, ax=ax, color='black', size=3, alpha=0.3)
             
-            ax.set_title("Hourly Productivity Distribution (Box Plot)")
+            ax.set_title("Hourly Productivity Distribution")
             ax.set_xlabel("Game Hour")
             ax.set_ylabel("Total Score")
             ax.set_xticks(range(0, 12)) 
